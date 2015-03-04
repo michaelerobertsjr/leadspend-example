@@ -1,6 +1,6 @@
 /*!
  * jQuery Validate LeadSpend Email Validation config and auto-start
- * jquery.validate.leadspendemail-0.1.js
+ * jquery.validate.leadspendemail-0.3.js
  *
  * Original author: @this-sam, @leadspend
  * Kudos to: @jtnotat
@@ -49,6 +49,21 @@
 
     // automatically initialize this on any forms with leadSpendEmail.  Defaults can still be updated after this.
     $( document ).ready( function(){
-        $( ".leadSpendEmail" ).closest( "form" ).validate();
+        $( ".leadSpendEmail" ).each(function(){
+            var emailField = $(this);
+            emailField.closest( "form" ).validate({
+                invalidHandler : function( event, validator ) {
+                    if($( emailField ).siblings( ".leadSpendEmail-result" ).val() == "pending"){
+                        return true;
+                    };
+                },
+            });
+        });
+
+        $( ".leadSpendEmail-result" ).on( "change", function( event ){
+            if($(this).val() != "pending"){
+                $( event.target.form ).find( ".leadSpendEmail" ).trigger( "focusout" );
+            }
+        });
     });
 }( jQuery ) );
